@@ -1,0 +1,21 @@
+{
+  "name": "playwright",
+  "version": "1.0.0",
+  "description": "Learning Playwright to write the WEB UI automation case",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zheng-Li01/PlayWright.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zheng-Li01/PlayWright/issues"
+  },
+  "homepage": "https://github.com/Zheng-Li01/PlayWright#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.26.0"
+  }
+}
