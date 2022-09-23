@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/Zheng-Li01/PlayWright#readme",
   "devDependencies": {
-    "@playwright/test": "^1.26.0"
+    "@playwright/test": "^1.26.0",
+    "@types/node": "^18.7.18"
   }
 }
