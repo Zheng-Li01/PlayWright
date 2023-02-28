@@ -16,7 +16,7 @@ def test_should_work_on_multiple_pages(page: Page, url: str):
 
 
 # @pytest.mark.skipif(
-#     condition=not pytest.config.getoption("--headed"),
+#     condition=not pytest.Config.getoption("--headed"),
 #     reason="Only works in headed mode",
 # )
 def test_should_work_in_headed_mode_only(page: Page):
