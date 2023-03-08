@@ -29,33 +29,55 @@ def test_rename_codespace(playwright : Playwright):
     context = browser.new_context(storage_state="./playwright/.auth/state.json")
     page = context.new_page()
     page.goto("https://github.com/codespaces")
-    page.get_by_role("button", name="Codespace configuration").nth(1).click()
+    page.get_by_role("button", name="Codespace configuration").nth(0).click()
     page.get_by_role("menuitem", name="Rename").click()
-    # message  = page.on("dialog", lambda dialog: dialog.accept())
-    message1 =page.on("dialog", lambda dialog: dialog.accept())
-    message2 = page.on("dialog", lambda dialog: dialog.default_value)
-    message3 = page.on("dialog", lambda dialog: dialog.type())
-    # message  = page.on("dialog", lambda dialog: print(dialog.message))
-    # page.type("RenameCodeSpaceTesting")
-    # page.get_by_role("button").click()
-    # Will hang here
-    # page.wait_for_selector(".modal", state="visible")
-    # close_button = page.query_selector(".modal .close")
-    # close_button.click()
-    # page.wait_for_timeout(3000)
-    # page.type("RenameCodeSpaceTest")
-    page.close()
-
-@pytest.mark.rename
-def test_dailog(playwright : Playwright):
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("Enter")
+    # page.on("dialog", lambda dialog:dialog.accept("CodeSpaceRenameTesting"))
+    # page.keyboard.press("Enter")
+    # codeSpaceRenameLocator = page.locator("body > div.logged-in.env-production.page-responsive > div.application-main > main > div > div.Layout-main > div:nth-child(4) > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(2) > div > a")
+    # codeSpaceRenameText = codeSpaceRenameLocator.text_content()
+    # assert "CodeSpaceRenameTesting" in codeSpaceRenameText
+  
+    
+@pytest.mark.delete
+def test_delete_codespace(playwright : Playwright):
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context(storage_state="./playwright/.auth/state.json")
     page = context.new_page()
     page.goto("https://github.com/codespaces")
-    page.get_by_role("button", name="Codespace configuration").nth(1).click()
-    page.get_by_role("menuitem", name="Rename").click() 
-    page.on("dialog", lambda dialog: dialog.accept("renameCodeSpaceTestingZhengtesting"))
-    sleep(3000)
+    page.get_by_role("button", name="Codespace configuration").nth(0).click()
+    page.get_by_role("menuitem", name="Delete codespace CodeSpaceRename").click()
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("Enter")
+    page.on("dialog", lambda dialog: dialog.accept())
     page.keyboard.press("Enter")
-    # page.evaluate('prompt("hello playwright", "good idea")')
+    # page.reload()
+
+@pytest.mark.stop
+def test_stop_codespace(playwright : Playwright):
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context(storage_state="./playwright/.auth/state.json")
+    page = context.new_page()
+    page.goto("https://github.com/codespaces")
+    codeSpaceStatus = page.locator("body > div.logged-in.env-production.page-responsive > div.application-main > main > div > div.Layout-main > div:nth-child(4) > div > div.Box-row > div > div:nth-child(2) > div")
+    # codeSpaceStatusText = codeSpaceStatus.text_content()
+    # assert "Active" in codeSpaceStatusText
+    if "Active" in codeSpaceStatus.text_content():
+        page.get_by_role("button", name="Codespace configuration").nth(0).click()
+        page.get_by_role("menuitem", name="Stop codespace").click()
+    else:
+        "The codesapce has been stoped"
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("Enter")
+    page.reload()
+
 
