@@ -1,0 +1,44 @@
+import pytest
+from asyncio import sleep
+from playwright.sync_api import Page, Playwright, expect
+import re
+import uuid
+
+@pytest.mark.blanktemplate
+def test_blank_template_codespace(playwright : Playwright):
+    browser = playwright.chromium.launch(headless=False,args=["--start-maximized"])
+    context = browser.new_context(storage_state="./playwright/.auth/state.json",no_viewport=True)
+    page = context.new_page()
+    page.goto("https://github.com/codespaces")
+    with page.expect_popup() as new_page_info:
+        page.get_by_role("listitem").filter(has_text="Blank By github Start with a blank canvas or import any packages you need. Use t").get_by_role("button", name="Use this template").click()
+        page.wait_for_timeout(30000)
+    new_page_value = new_page_info.value
+    # terminalTetx= new_page_value.get_by_role("generic", name=re.compile("Terminal.*")).text_content()
+    new_page_value.locator(".monaco-list > .monaco-scrollable-element").click()
+    new_page_value.get_by_role("button", name="New File...").click()
+    # page.get_by_role("textbox", name="Type file name. Press Enter to confirm or Escape to cancel.").click()
+    new_page_value.get_by_role("textbox", name="Type file name. Press Enter to confirm or Escape to cancel.").fill("codesapce.html")
+    new_page_value.keyboard.press("Enter")
+    # page.locator(".editor-group-container").click()
+    new_page_value.get_by_role("textbox", name="codesapce.html").fill("test")
+    new_page_value.press("body", "Control+s")
+    new_page_value.press("body", "Control+Shift+G")
+    publish_github_button = "#workbench\.view\.scm > div > div > div.monaco-scrollable-element > div.split-view-container > div > div > div.pane-body.welcome > div.welcome-view > div > div.welcome-view-content > div > a > span:nth-child(2)"
+    new_page_value.locator(publish_github_button).click()
+    # new_page_value.get_by_role("button", name=re.compile("*. Publish to GitHub")).click()
+    guid = uuid.uuid4().hex
+    new_page_value.get_by_role("combobox", name= "Repository Name").fill("codesapceTesting_" + guid)
+    new_page_value.wait_for_timeout(1000)
+    new_page_value.keyboard.press("ArrowDown")
+    # new_page_value.keyboard.press("ArrowDown")
+    new_page_value.keyboard.press("Enter")
+    new_page_value.get_by_role("button", name="OK").click()
+    # new_page_value.keyboard.press("Enter")
+    page.wait_for_load_state()
+    # new_page_value.go_back()
+    success_locator = "#list_id_9_0 > div.notification-list-item.expanded > div.notification-list-item-main-row > div.notification-list-item-message > span"
+    success_info = new_page_value.locator(success_locator).text_content()
+    assert "Successfully published" in success_info
+
+
