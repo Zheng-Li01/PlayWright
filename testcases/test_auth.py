@@ -14,9 +14,10 @@ def test_login_codespace(playwright: Playwright) -> None:
     page.get_by_label("Password").fill("Lz@936548")
     page.get_by_role("button", name="Sign in").click()
     expect(page).to_have_url(re.compile(".*two-factor/app"))
-    page.locator("id=app_totp").fill("145894")
+    page.locator("id=app_totp").fill("007513")
     # page.get_by_role("button", name="Verify").click()
     # page.close()
     storage = context.storage_state(path="./playwright/.auth/state.json")
     expect(page).to_have_url(re.compile(".*/codespaces"))
+    
 
