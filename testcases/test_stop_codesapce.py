@@ -66,6 +66,7 @@ def test_stop_current_codespace_F1(playwright : Playwright):
     page.get_by_role("menuitem", name="Open in browser").click()
     # page.wait_for_load_state()
     page.wait_for_timeout(30000)
+    page.locator(".monaco-list > .monaco-scrollable-element").nth(0).click()
     # page.get_by_role("button", name="remote Codespaces").click()
     page.keyboard.press("F1")
     page.get_by_placeholder("Type the name of a command to run.").fill(">codespace: stop current codespace")

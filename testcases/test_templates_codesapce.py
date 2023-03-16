@@ -15,7 +15,7 @@ def test_blank_template_codespace(playwright : Playwright):
         page.wait_for_timeout(30000)
     new_page_value = new_page_info.value
     # terminalTetx= new_page_value.get_by_role("generic", name=re.compile("Terminal.*")).text_content()
-    new_page_value.locator(".monaco-list > .monaco-scrollable-element").click()
+    new_page_value.locator(".monaco-list > .monaco-scrollable-element").nth(0).click()
     new_page_value.get_by_role("button", name="New File...").click()
     # page.get_by_role("textbox", name="Type file name. Press Enter to confirm or Escape to cancel.").click()
     guid = uuid.uuid4().hex
