@@ -145,7 +145,7 @@ def test_add_secret_to_current_repo(playwright : Playwright):
     # print(add_secret_info_after, add_secret_info_before)
 
 @pytest.mark.secrets
-def test_update_add_secret_to_current_repo(playwright : Playwright):
+def test_update_and_add_secret_to_current_repo(playwright : Playwright):
     browser = playwright.chromium.launch(headless=False,args=["--start-maximized"])
     context = browser.new_context(storage_state="./playwright/.auth/state.json",no_viewport=True)
     page = context.new_page()
@@ -346,3 +346,57 @@ def test_remove_secret_applied_repo(playwright : Playwright):
     secret_message_after = page.get_by_role("option", name=re.compile(".*Updated.*")).nth(0).text_content().strip()
     assert secret_message_before.lower() not in secret_message_after.lower()
     # print(secret_message_after, secret_message_before)
+
+@pytest.mark.secrets
+def test_update_secret_applied_repo(playwright : Playwright):
+    browser = playwright.chromium.launch(headless=False,args=["--start-maximized"])
+    context = browser.new_context(storage_state="./playwright/.auth/state.json",no_viewport=True)
+    page = context.new_page()
+    page.goto("https://github.com/codespaces")
+    # page.get_by_role("group").filter(has_text="Open in ... Rename Export changes to a branch Change machine type Stop codespace").get_by_role("button", name="Codespace configuration").click()
+    page.get_by_role("button", name="Codespace configuration").nth(0).click()
+    page.get_by_role("menuitem", name="Open in ...").click()
+    page.get_by_role("menuitem", name="Open in browser").click()
+    page.wait_for_timeout(30000)
+    # with page.expect_popup() as page_info:
+    #     page.get_by_role("menuitem", name="Open in browser").click()
+    #     page.wait_for_timeout(30000)
+    # page.wait_for_load_state()
+    # page = page_info.value
+    page.locator(".monaco-list > .monaco-scrollable-element").nth(0).click()
+    page.keyboard.press("F1")
+    page.get_by_placeholder("Type the name of a command to run.").fill(">codespace: Manage User Secrets")
+    page.keyboard.press("Enter")
+    page.wait_for_timeout(1000)
+    page.get_by_placeholder("Secrets are environment variables that are encrypted and only exposed to codespaces you create.").fill("Add a new secret")
+    # page.keyboard.press("ArrowDown")
+    page.keyboard.press("Enter")
+    guid = uuid.uuid4().hex
+    secret_name = "TESTING" + guid
+    page.get_by_role("textbox", name="Enter Secret Name").fill(secret_name)
+    page.keyboard.press("Enter")
+    page.get_by_role("textbox", name="Enter Secret Value").fill("123456" + guid)
+    page.keyboard.press("Enter")
+    # Page.wait_for_timeout(3000)
+    dialog_message = page.locator(".notification-list-item.expanded").filter(has_text="Your codespace secrets have changed.").text_content()
+    assert "Your codespace secrets have changed" in dialog_message
+    page.get_by_role("button", name="Reload to apply").click()
+    page.wait_for_timeout(30000)
+    page.locator(".monaco-list > .monaco-scrollable-element").nth(0).click()
+    page.keyboard.press("F1")
+    page.get_by_placeholder("Type the name of a command to run.").fill(">codespace: Manage User Secrets")
+    page.keyboard.press("Enter")
+    page.wait_for_timeout(1000)
+    page.get_by_placeholder("Secrets are environment variables that are encrypted and only exposed to codespaces you create.").fill(secret_name)
+    page.wait_for_timeout(1000)
+    page.keyboard.press("Enter")
+    # add_secret_info_before = page.get_by_role("option", name="Delete the secret", exact=True).text_content()
+    page.get_by_placeholder("What would you like to do?").fill("Update the secret value")
+    page.keyboard.press("Enter")
+    page.wait_for_timeout(1000)
+    page.get_by_role("textbox", name="Enter Secret Value").fill("Update123456" + guid)
+    page.keyboard.press("Enter")
+    dialog_message = page.locator(".notification-list-item.expanded").filter(has_text="Your codespace secrets have changed.").text_content()
+    assert "Your codespace secrets have changed" in dialog_message
+    page.get_by_role("button", name="Reload to apply").click()
+    page.wait_for_timeout(30000)
